@@ -1,6 +1,6 @@
 mini_FFT
 
-Fork from 'fix_fft' and 'fast_fft' to reduce code size and needed RAM 
+(Fork from 'fix_fft' and 'fast_fft' to reduce code size and needed RAM)
 
 Alike fix_fft, this works with int8 to compute faster, here the only change are:
   - reduced size of sine wave to 1/4,
