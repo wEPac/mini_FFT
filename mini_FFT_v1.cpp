@@ -126,7 +126,7 @@ void mini_FFT(char fr[], int m)
 
   // create imaginary parts then fill it up the with zero
   char fi[n_fft];
-  memset(fi, 0, n_FFT);
+  memset(fi, 0, n_fft);
   
   mr    = 0;
   nn    = n_fft - 1;
