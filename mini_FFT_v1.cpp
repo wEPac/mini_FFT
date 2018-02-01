@@ -31,8 +31,9 @@
   Made portable:  Malcolm Slaney 12/15/94 malcolm@interval.com
   Enhanced:  Dimitrios P. Bouras  14 Jun 2006 dbouras@ieee.org
   Modified for 8bit values David Keller  10.10.2010
-  Mofified: 20 Jan 2018 Eric Paquot,
+  Mofified: 20 Jan 2018 Eric Paquot:
   - reduced size of sine wave to 1/4,
+  - optimized values in the sine wave array,
   - wiped the fft reverse,
   - imaginaries values are created by the fft routine and start
   with zero value,
