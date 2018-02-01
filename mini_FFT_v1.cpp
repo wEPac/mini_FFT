@@ -195,7 +195,7 @@ void mini_FFT(char fr[], int m)
       }
       else {
         wr    = -pgm_read_byte_near(Sinewave + j - N_WAVE / 4);
-        wi    = -pgm_read_byte_near(Sinewave + (N_WAVE << 1) / 4 - j);
+        wi    = -pgm_read_byte_near(Sinewave + N_WAVE / 2 - j);
       }
       
       for (i = m; i < n_fft; i += istep) {
