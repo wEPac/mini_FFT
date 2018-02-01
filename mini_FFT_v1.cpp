@@ -31,9 +31,8 @@
   Made portable:  Malcolm Slaney 12/15/94 malcolm@interval.com
   Enhanced:  Dimitrios P. Bouras  14 Jun 2006 dbouras@ieee.org
   Modified for 8bit values David Keller  10.10.2010
-  Mofified: 20 Jan 2018 Eric Paquot:
+  Mofified: 20 Jan 2018 Eric Paquot,
   - reduced size of sine wave to 1/4,
-  - optimized values in the sine wave array,
   - wiped the fft reverse,
   - imaginaries values are created by the fft routine and start
   with zero value,
@@ -121,10 +120,16 @@ inline char FIX_MPY(char a, char b)
 }
 
 /*
-  fast_FFT() - perform forward/inverse fast Fourier transform.
+  fix_FFT() - perform forward/inverse fast Fourier transform.
   fr[n],fi[n] are real and imaginary arrays, both INPUT AND
   RESULT (in-place FFT), with 0 <= n < 2**m; set inverse to
   0 for forward transform (FFT), or 1 for iFFT.
+
+  Changed, now mini_FFT() - perform forward fast Fournier transform
+  fr[n] is real array,
+  fi[n] is imaginary array and temporarly created as private,
+  RESULT into fr(0) to fr(n/2 - 1) for reals, and fr(n/2) to fr(n - 1)
+  for imaginaries.
 */
 void mini_FFT(char fr[], int m)
 {
@@ -191,12 +196,12 @@ void mini_FFT(char fr[], int m)
       wr = ( pgm_read_byte_near(Sinewave + j + N_WAVE / 4)) >> 1;
       wi = (-pgm_read_byte_near(Sinewave + j)) >> 1;//*/
       if (j < N_WAVE / 4) {
-        wr    =  pgm_read_byte_near(Sinewave + N_WAVE / 4 - j);
-        wi    = -pgm_read_byte_near(Sinewave + j);
+        wr    =  pgm_read_byte_near(Sinewave + N_WAVE / 4 - j);   //  cos(j), 1 to 0
+        wi    = -pgm_read_byte_near(Sinewave + j);                // -sin(j), 0 to -1
       }
       else {
-        wr    = -pgm_read_byte_near(Sinewave + j - N_WAVE / 4);
-        wi    = -pgm_read_byte_near(Sinewave + N_WAVE / 2 - j);
+        wr    = -pgm_read_byte_near(Sinewave + j - N_WAVE / 4);   //  cos(j), 0 to -1
+        wi    = -pgm_read_byte_near(Sinewave + N_WAVE / 2 - j);   // -sin(j), -1 to 0 
       }
       
       for (i = m; i < n_fft; i += istep) {
