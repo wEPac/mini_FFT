@@ -4,6 +4,7 @@ mini_FFT
 
 Alike fix_fft, this works with int8 to compute faster, here the only change are:
   - reduced size of sine wave to 1/4,
+  - optimized values in the sine wave array,
   - wiped the fft reverse,
   - imaginaries values are created by the fft routine and start with zero value,
   - changed process to record values, using temporary array for the imaginaries and returning imaginaries result into the last half array part of real
