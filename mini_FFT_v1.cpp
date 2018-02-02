@@ -55,7 +55,7 @@
   to keep 1/4 of N_WAVE
 */
 //const int8_t Sinewave[N_WAVE - N_WAVE / 4] PROGMEM = {
-const int8_t Sinewave[N_WAVE / 4] PROGMEM = {
+const int8_t Sinewave[1 + N_WAVE / 4] PROGMEM = {
     0,   2,   3,   5,   6,   8,   9,  11,
    12,  14,  15,  17,  18,  20,  21,  23,
    24,  25,  27,  28,  30,  31,  32,  34,
