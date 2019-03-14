@@ -65,7 +65,8 @@ const int8_t Sinewave[1 + N_WAVE / 4] PROGMEM = {
   58, 59, 59, 60, 60, 61, 61, 61,
   62, 62, 62, 63, 63, 63, 63, 63,
   63//*/
-  // ^ already divided by 2 to reduce tmings and to have better rounding
+  // ^ Already divided by 2 to run faster and to have better rounding
+  // Repeat last value makes it easier to compute
   /*
   0,   3,   6,   9,   12,  15,  18,  21,
   24,  28,  31,  34,  37,  40,  43,  46,
@@ -101,7 +102,8 @@ const int8_t Sinewave[1 + N_WAVE / 4] PROGMEM = {
   -90,  -88,  -85,  -83,  -81,  -78,  -76,  -73,
   -71,  -68,  -65,  -63,  -60,  -57,  -54,  -51,
   -48,  -46,  -43,  -40,  -37,  -34,  -31,  -28,
-  -24,  -21,  -18,  -15,  -12,  -9,   -6,   -3*/
+  -24,  -21,  -18,  -15,  -12,  -9,   -6,   -3
+  //*/
 };
 
 
@@ -127,7 +129,7 @@ inline char FIX_MPY(char a, char b)
   RESULT (in-place FFT), with 0 <= n < 2**m; set inverse to
   0 for forward transform (FFT), or 1 for iFFT.
 
-  Changed, now mini_FFT() - perform forward fast Fournier transform
+  Changed, now mini_FFT() - perform ONLY forward fast Fournier transform
   fr[n] is real array,
   fi[n] is imaginary array and temporarly created as private,
   RESULT into fr(0) to fr(n/2 - 1) for reals, and fr(n/2) to fr(n - 1)
@@ -165,7 +167,8 @@ void mini_FFT(char fr[], int m)
                   :           :
                   : 55 <=> 59 : 
   */
-  for (m = 1; m <= nn; ++m) {
+  for (m = 1; m <= nn; ++m)
+  {
     l = n_fft;
     do { l >>= 1; } while (mr + l > nn);
     
@@ -183,7 +186,8 @@ void mini_FFT(char fr[], int m)
 
   l = 1;
   k = LOG2_N_WAVE - 1;
-  while (l < n_fft) {
+  while (l < n_fft)
+  {
     /*
       fixed scaling, for proper normalization --
       there will be log2(n) passes, so this results
@@ -192,21 +196,25 @@ void mini_FFT(char fr[], int m)
     */
 
     istep = l << 1;
-    for (m = 0; m < l; ++m) {
+    for (m = 0; m < l; ++m)
+    {
       j = m << k;       // j = [0, N_WAVE / 2[
       /* change here to use only 1/4 from sine wave
       wr = ( pgm_read_byte_near(Sinewave + j + N_WAVE / 4)) >> 1;
       wi = (-pgm_read_byte_near(Sinewave + j)) >> 1;//*/
-      if (j < N_WAVE / 4) {
+      if (j < N_WAVE / 4)
+      {
         wr    =  pgm_read_byte_near(Sinewave + N_WAVE / 4 - j);   //  cos(j), 1 to 0
         wi    = -pgm_read_byte_near(Sinewave + j);                // -sin(j), 0 to -1
       }
-      else {
+      else
+      {
         wr    = -pgm_read_byte_near(Sinewave + j - N_WAVE / 4);   //  cos(j), 0 to -1
         wi    = -pgm_read_byte_near(Sinewave + N_WAVE / 2 - j);   // -sin(j), -1 to 0 
       }
       
-      for (i = m; i < n_fft; i += istep) {
+      for (i = m; i < n_fft; i += istep)
+      {
         j     = i + l;
         tr    = FIX_MPY(wr, fr[j]) - FIX_MPY(wi, fi[j]);
         ti    = FIX_MPY(wr, fi[j]) + FIX_MPY(wi, fr[j]);
@@ -230,5 +238,3 @@ void mini_FFT(char fr[], int m)
   mr = n_fft / 2;
   memcpy(fr + mr, fi, mr);
 }
-
-
